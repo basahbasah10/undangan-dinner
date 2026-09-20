@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Undangan Dinner untuk Kamu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #2b0f1f;
+    --wine: #4a1a33;
+    --wine-soft: #5c2542;
+    --rose: #e8a5b0;
+    --gold: #e6c58f;
+    --paper: #fbeee6;
+    --muted: #cfaeb9;
+    --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --sans: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: dark;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --night: #2b0f1f; --paper: #fbeee6; }
+  }
+  :root[data-theme="dark"] { --night: #2b0f1f; --paper: #fbeee6; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smooth; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--night);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { overflow-x: hidden; }
+  body.locked { overflow: hidden; }
+  #rest { display: none; }
+  #rest.show { display: block; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.15; margin: 0; }
+  p { margin: 0; }
+  button { font: inherit; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+  /* Langit malam */
+  .sky {
+    background-color: var(--night);
+    background-image:
+      radial-gradient(1.5px 1.5px at 12% 18%, #fff8 50%, transparent 51%),
+      radial-gradient(1px 1px at 28% 62%, #fff9 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 44% 12%, #fffa 50%, transparent 51%),
+      radial-gradient(1px 1px at 63% 38%, #fff8 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 78% 72%, #fff9 50%, transparent 51%),
+      radial-gradient(1px 1px at 88% 20%, #fffa 50%, transparent 51%),
+      radial-gradient(1px 1px at 20% 85%, #fff7 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 92% 55%, #fff8 50%, transparent 51%),
+      radial-gradient(120% 80% at 50% 0%, var(--wine-soft) 0%, var(--night) 70%);
+  }
+
+  /* ===== Cover ===== */
+  #cover {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 32px 24px;
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  #cover.gone { opacity: 0; transform: scale(1.06); pointer-events: none; }
+  #cover .small { color: var(--muted); font-size: 15px; letter-spacing: .04em; }
+  #cover h1 { font-size: clamp(30px, 8.5vw, 54px); font-style: italic; margin: 10px 0 8px; max-width: 14em; }
+  #cover .to { color: var(--gold); font-family: var(--serif); font-size: 26px; font-style: italic; margin-bottom: 44px; }
+  .seal {
+    width: 112px; height: 112px; border-radius: 50%;
+    border: 0; color: #4a1a33;
+    background: radial-gradient(circle at 35% 30%, #f3d9a8, var(--gold) 55%, #b98f52);
+    box-shadow: 0 10px 30px #0008, inset 0 -6px 12px #0003;
+    display: grid; place-items: center;
+    animation: beat 2.4s ease-in-out infinite;
+  }
+  .seal svg { width: 46px; height: 46px; }
+  @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+  #cover .hint { margin-top: 18px; color: var(--muted); font-size: 15px; }
+
+  /* ===== Isi ===== */
+  #main { display: none; }
+  #main.show { display: block; }
+  section { padding: 84px 24px; max-width: 640px; margin: 0 auto; }
+  .center { text-align: center; }
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .9s ease, transform .9s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* Ucapan */
+  #ucapan h2 { font-size: clamp(34px, 9vw, 48px); font-style: italic; margin-bottom: 26px; }
+  #ucapan .line { font-size: 18px; margin-bottom: 16px; color: #f4dfd6; }
+  .doa {
+    margin: 34px auto 0; padding: 26px 22px;
+    border: 1px solid #e6c58f55; border-radius: 22px;
+    background: #ffffff08;
+  }
+  .doa h3 { font-size: 26px; color: var(--gold); margin-bottom: 14px; font-style: italic; }
+  .doa p { font-family: var(--serif); font-size: 21px; line-height: 1.55; }
+  .btn {
+    border: 0; border-radius: 999px; padding: 14px 30px;
+    background: var(--gold); color: #3b1428; font-weight: 700;
+    transition: transform .15s ease, background .2s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost { background: transparent; color: var(--paper); border: 1px solid #fbeee655; }
+  #amin { margin-top: 22px; }
+  #amin[disabled] { background: var(--rose); cursor: default; transform: none; }
+
+  /* Rundown */
+  #rundown h2, #rsvp h2 { font-size: clamp(34px, 9vw, 48px); font-style: italic; text-align: center; }
+  #rundown .sub { text-align: center; color: var(--muted); margin: 10px 0 44px; }
+  .timeline { position: relative; padding-left: 0; }
+  .step { position: relative; padding: 0 0 46px 66px; }
+  .step::before {
+    content: ""; position: absolute; left: 21px; top: 44px; bottom: 0; width: 2px;
+    background: repeating-linear-gradient(to bottom, #e6c58f77 0 6px, transparent 6px 12px);
+  }
+  .step:last-child { padding-bottom: 0; }
+  .step:last-child::before { display: none; }
+  .dot {
+    position: absolute; left: 0; top: 0; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--gold); color: #3b1428; display: grid; place-items: center;
+  }
+  .dot svg { width: 22px; height: 22px; }
+  .time { font-family: var(--serif); font-size: 32px; color: var(--gold); line-height: 1; }
+  .step h3 { font-size: 26px; margin: 6px 0 6px; }
+  .step p { color: #f0d8ce; }
+
+  /* Jalan + mobil */
+  .road {
+    position: relative; height: 74px; margin-top: 18px; overflow: hidden;
+    border-radius: 14px; background: #1d0a15; border: 1px solid #e6c58f33;
+  }
+  .road::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 14px; height: 3px;
+    background: repeating-linear-gradient(to right, #e6c58f 0 22px, transparent 22px 44px);
+    opacity: .7;
+  }
+  .car { position: absolute; bottom: 20px; left: -110px; width: 96px; }
+  .car.go { animation: drive 5.5s cubic-bezier(.4,.1,.3,1) forwards; }
+  @keyframes drive { to { left: calc(100% - 108px); } }
+  .car .wheel { transform-origin: center; transform-box: fill-box; }
+  .car.go .wheel { animation: spin .5s linear 9; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .arrived { margin-top: 10px; color: var(--rose); min-height: 1.6em; font-size: 15px; }
+
+  /* Hadiah */
+  .gift {
+    margin-top: 16px; border: 1px dashed #e6c58f88; border-radius: 18px;
+    background: #ffffff08; color: var(--paper); padding: 16px 18px; width: 100%;
+    display: flex; align-items: center; gap: 14px; text-align: left;
+  }
+  .gift svg { width: 44px; height: 44px; flex: none; }
+  .gift .lid { transition: transform .5s ease; transform-origin: 20px 20px; }
+  .gift.open .lid { transform: translateY(-9px) rotate(-14deg); }
+  .gift-msg { margin-top: 12px; padding: 16px 18px; border-radius: 16px; background: var(--wine-soft); display: none; }
+  .gift-msg.show { display: block; }
+
+  /* Fotobox */
+  .flash { position: fixed; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 30; }
+  .flash.pop { animation: flash .45s ease-out; }
+  @keyframes flash { 0% { opacity: .95; } 100% { opacity: 0; } }
+  .strip { display: none; gap: 8px; margin-top: 14px; }
+  .strip.show { display: flex; }
+  .strip div {
+    flex: 1; aspect-ratio: 3/4; border-radius: 8px; background: #fbeee6; padding: 6px;
+    display: grid; place-items: center; font-size: 30px; transform: rotate(var(--r));
+    box-shadow: 0 6px 14px #0006;
+  }
+  .strip div span { background: linear-gradient(160deg, #e8a5b0, #b96b86); width: 100%; height: 100%; border-radius: 4px; display: grid; place-items: center; }
+
+  /* RSVP */
+  #rsvp { text-align: center; }
+  #rsvp .ask { font-size: 19px; margin: 18px 0 8px; }
+  .detail { color: var(--gold); font-family: var(--serif); font-size: 22px; font-style: italic; }
+  .answers { position: relative; margin-top: 34px; min-height: 130px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: flex-start; }
+  #btnNo { position: relative; transition: transform .25s ease; }
+  .thanks { display: none; margin-top: 26px; }
+  .thanks.show { display: block; }
+  .thanks h3 { font-size: 34px; font-style: italic; color: var(--rose); margin-bottom: 10px; }
+  .thanks .btn { display: inline-block; margin-top: 20px; text-decoration: none; }
+  footer { text-align: center; padding: 30px 24px 60px; color: var(--muted); font-family: var(--serif); font-size: 20px; font-style: italic; }
+
+  /* Kue */
+  #kue h2 { font-size: clamp(32px, 8.5vw, 46px); font-style: italic; }
+  #kue .line { color: #f4dfd6; margin-top: 12px; }
+  .cake { display: block; margin: 26px auto 8px; padding: 0; border: 0; background: none; width: min(280px, 72vw); }
+  .cake svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .flame { transform-origin: 110px 48px; animation: flick .5s ease-in-out infinite alternate; }
+  @keyframes flick { from { transform: scale(1, 1) rotate(-2deg); } to { transform: scale(.92, 1.08) rotate(2deg); } }
+  .cake.out .flame { display: none; }
+  .smoke { opacity: 0; }
+  .cake.out .smoke { animation: smoke 2.2s ease-out forwards; }
+  .cake.out .smoke.s2 { animation-delay: .25s; }
+  .cake.out .smoke.s3 { animation-delay: .5s; }
+  @keyframes smoke { 0% { opacity: .8; transform: translateY(0) scale(.6); } 100% { opacity: 0; transform: translateY(-38px) scale(1.6); } }
+  .kue-done { display: none; margin-top: 12px; }
+  .kue-done.show { display: block; }
+  .kue-done h3 { font-size: 32px; font-style: italic; color: var(--rose); margin-bottom: 8px; }
+  .kue-done .btn { margin-top: 20px; }
+
+  /* Dresscode */
+  .dress { text-align: center; margin: 0 0 46px; padding: 22px; border: 1px solid #e6c58f55; border-radius: 22px; background: #ffffff08; }
+  .dress h3 { font-size: 28px; color: var(--gold); font-style: italic; margin-bottom: 6px; }
+  .swatches { display: flex; gap: 14px; justify-content: center; margin-top: 14px; }
+  .swatches span { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--gold); }
+
+  /* Piring */
+  .plate { margin-top: 18px; border-radius: 14px; background: #1d0a15; border: 1px solid #e6c58f33; padding: 10px; }
+  .plate svg { width: 100%; height: auto; display: block; max-height: 190px; }
+
+  /* Cadangan kalau tombol link tidak terbuka */
+  .fallback { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: #ffffff0d; font-size: 14px; color: var(--muted); text-align: left; }
+  .fallback input { width: 100%; margin: 8px 0; padding: 10px 12px; border-radius: 10px; border: 1px solid #e6c58f55; background: #1d0a15; color: var(--paper); font: inherit; font-size: 14px; }
+  .btn.small { padding: 8px 18px; font-size: 14px; }
+  .thanks .fallback { max-width: 420px; margin: 22px auto 0; }
+
+  /* Hati melayang */
+  .heart { position: fixed; bottom: -30px; z-index: 40; pointer-events: none; animation: floatUp linear forwards; }
+  @keyframes floatUp { to { transform: translateY(-115vh) rotate(25deg); opacity: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .seal { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .car.go { animation-duration: .01s; }
+    .car.go .wheel { animation: none; }
+    .heart { display: none; }
+  }
+</style>
+</head>
+<body class="locked">
+
+<!-- ===== Cover ===== -->
+<div id="cover" class="sky">
+  <p class="small">Ada undangan khusus untuk</p>
+  <h1 id="namaCover">Kamu</h1>
+  <p class="to">dari <span id="namaPengirim">aku</span></p>
+  <button class="seal" id="openBtn" aria-label="Buka undangan">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6 5c2 0 3.4 1.1 4 2.3h4c.6-1.2 2-2.300 4-2.300 3.300 0 5.100 3.400 3.600 6.800C19.500 16.400 12 21 12 21z" transform="translate(0 -.5)"/></svg>
+  </button>
+  <p class="hint">Ketuk untuk membuka</p>
+</div>
+
+<!-- ===== Isi ===== -->
+<main id="main">
+
+  <section id="ucapan" class="center sky" style="max-width:none;">
+    <div style="max-width:640px;margin:0 auto;">
+      <h2 class="reveal">Hai, <span class="nama">Sayangku</span>.</h2>
+      <p class="line reveal">Aku tahu belakangan ini kita tidak sedekat dulu. Ada jarak, ada diam yang terlalu panjang, dan aku sadar aku ikut andil di dalamnya.</p>
+      <p class="line reveal">Malam ini aku ingin mengajakmu syukuran kecil untuk ulang tahunmu. Aku ingin bersyukur bersama atas bertambahnya usiamu dan merayakan kamu sepenuh hati.</p>
+      <p class="line reveal">Terima kasih untuk semua yang sudah kita lewati bersama. Kamu tetap salah satu hal terbaik yang pernah terjadi padaku.</p>
+
+      <div class="doa reveal">
+        <h3>Doaku di usia barumu</h3>
+        <p>Ya Allah, terima kasih Engkau telah memberinya satu tahun lagi. Panjangkanlah umurnya dalam kesehatan dan keberkahan, lapangkan rezekinya, mudahkan setiap cita-citanya, dan jadikan usia barunya penuh ketenangan dan kebahagiaan. Lembutkanlah hati kami berdua, ajari kami saling mendengar, meminta maaf, dan memaafkan. Kalau memang kami diciptakan untuk bersama, satukanlah kami kembali dalam cinta yang lebih dewasa. Apa pun jawaban-Mu, jagalah dia selalu dalam bahagia.</p>
+        <button class="btn" id="amin">Aamiin</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="kue" class="center sky" style="max-width:none;">
+    <div style="max-width:640px;margin:0 auto;">
+      <h2 class="reveal">Tiup lilinnya dulu</h2>
+      <p class="line reveal" id="kueHint">Buat satu harapan, lalu ketuk lilinnya.</p>
+      <button class="cake reveal" id="cakeBtn" aria-label="Tiup lilin">
+        <svg viewBox="0 0 220 200" aria-hidden="true">
+          <ellipse cx="110" cy="182" rx="100" ry="12" fill="#1d0a15"/>
+          <rect x="30" y="118" width="160" height="62" rx="12" fill="#7a0f2b"/>
+          <path d="M30 130q13 14 26 0t26 0 26 0 26 0 26 0 26 0v-6q0-6-6-6H36q-6 0-6 6z" fill="#f6d7d0"/>
+          <rect x="62" y="80" width="96" height="42" rx="10" fill="#a3193f"/>
+          <path d="M62 92q12 12 24 0t24 0 24 0 24 0v-4q0-8-8-8H70q-8 0-8 8z" fill="#f6d7d0"/>
+          <circle cx="60" cy="158" r="4" fill="#e6c58f"/><circle cx="90" cy="162" r="4" fill="#e6c58f"/><circle cx="130" cy="162" r="4" fill="#e6c58f"/><circle cx="160" cy="158" r="4" fill="#e6c58f"/>
+          <rect x="104" y="54" width="12" height="28" rx="3" fill="#e6c58f"/>
+          <path d="M104 62l12 6M104 70l12 6" stroke="#b98f52" stroke-width="2"/>
+          <g class="flame"><path d="M110 24c9 10 10 19 0 26-10-7-9-16 0-26z" fill="#ffb84a"/><path d="M110 34c4 5 4 10 0 13-4-3-4-8 0-13z" fill="#fff2b8"/></g>
+          <g fill="#f4dfd6"><circle class="smoke s1" cx="108" cy="40" r="5"/><circle class="smoke s2" cx="113" cy="36" r="4"/><circle class="smoke s3" cx="109" cy="32" r="3.5"/></g>
+        </svg>
+      </button>
+      <div class="kue-done" id="kueDone" aria-live="polite">
+        <h3>Selamat ulang tahun, Sayangku!</h3>
+        <p>Semoga harapanmu didengar dan dikabulkan.</p>
+        <button class="btn" id="lanjutBtn">Lihat rencana malam ini</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="rest">
+  <section id="rundown">
+    <h2 class="reveal">Rencana malam ini</h2>
+    <p class="sub reveal">Kamu cukup siap-siap. Sisanya urusan aku.</p>
+
+    <div class="dress reveal">
+      <h3>Dresscode</h3>
+      <p>Pakai warna maroon dan hitam ya.</p>
+      <div class="swatches" aria-hidden="true"><span style="background:#7a0f2b"></span><span style="background:#121212"></span></div>
+    </div>
+
+    <div class="timeline">
+
+      <div class="step reveal">
+        <div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div class="time">17.00</div>
+        <h3>Aku jemput kamu</h3>
+        <p>Mobil sudah siap di depan. Tinggal keluar dan masuk.</p>
+        <div class="road" id="road">
+          <svg class="car" id="car" viewBox="0 0 120 50" aria-label="Mobil menuju rumahmu" role="img">
+            <path d="M6 32c0-5 3-8 8-9l14-12c2-2 5-3 8-3h30c4 0 7 1 9 3l14 12c8 1 12 4 12 9v4c0 2-2 4-4 4H10c-2 0-4-2-4-4z" fill="#e8a5b0"/>
+            <path d="M34 13h14v11H24zM52 13h14c2 0 4 1 5 2l8 9H52z" fill="#2b0f1f" opacity=".85"/>
+            <circle cx="110" cy="33" r="3" fill="#f3d9a8"/>
+            <g class="wheel"><circle cx="32" cy="42" r="8" fill="#1d0a15"/><circle cx="32" cy="42" r="3" fill="#e6c58f"/><path d="M32 35v14M25 42h14" stroke="#e6c58f" stroke-width="1.2"/></g>
+            <g class="wheel"><circle cx="92" cy="42" r="8" fill="#1d0a15"/><circle cx="92" cy="42" r="3" fill="#e6c58f"/><path d="M92 35v14M85 42h14" stroke="#e6c58f" stroke-width="1.2"/></g>
+          </svg>
+        </div>
+        <p class="arrived" id="arrived" aria-live="polite"></p>
+      </div>
+
+      <div class="step reveal">
+        <div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a2 2 0 0 0 4 0V3M9 3v18M17 21V3c-2 1-3 4-3 8h3"/></svg></div>
+        <div class="time">19.00</div>
+        <h3>Sampai di tempat dinner</h3>
+        <p>Kita makan malam di <strong id="tempat">tempat rahasia</strong>. Pesan apa saja yang kamu mau.</p>
+        <div class="plate">
+          <svg viewBox="0 0 260 180" role="img" aria-label="Hidangan makan malam">
+            <g stroke="#e6c58f" stroke-width="3" stroke-linecap="round" fill="none"><path d="M28 30v38M36 30v38M44 30v38M28 68q8 10 16 0M36 78v72"/></g>
+            <path d="M232 30c-10 12-12 40-6 70h6z" fill="#e6c58f"/><path d="M232 100v50" stroke="#e6c58f" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="130" cy="92" r="72" fill="#f7ece6"/>
+            <circle cx="130" cy="92" r="56" fill="#fffaf6" stroke="#e4d3c8" stroke-width="2"/>
+            <ellipse cx="118" cy="90" rx="30" ry="20" transform="rotate(-15 118 90)" fill="#7a3b26"/>
+            <path d="M98 86l14-8M104 96l16-9M114 102l16-9" stroke="#4a2115" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="152" cy="74" r="14" fill="#f0c27b"/><circle cx="148" cy="70" r="5" fill="#f7d9a1"/>
+            <g fill="#5f9b52"><ellipse cx="152" cy="110" rx="10" ry="5" transform="rotate(20 152 110)"/><ellipse cx="140" cy="116" rx="9" ry="4.5" transform="rotate(-10 140 116)"/><ellipse cx="162" cy="102" rx="8" ry="4" transform="rotate(50 162 102)"/></g>
+            <circle cx="102" cy="68" r="6" fill="#d33b3b"/><circle cx="100" cy="66" r="1.8" fill="#ff9b9b"/>
+          </svg>
+        </div>
+        <a class="btn ghost" href="https://www.google.com/maps/place/Skyline+Best+View+Resto/@-6.8584349,107.6386345,2397m/data=!3m2!1e3!4b1!4m6!3m5!1s0x2e68e73bdaa51c0d:0x84c6aa75ef75f49f!8m2!3d-6.8584349!4d107.6386345!16s%2Fg%2F11g9zt3krb?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="display:inline-block;margin-top:14px;text-decoration:none;">Lihat lokasi</a>
+        <div class="fallback">
+          <span>Kalau tombol tidak terbuka, salin link lokasi ini:</span>
+          <input readonly id="lokasiInput" value="https://www.google.com/maps/place/Skyline+Best+View+Resto/@-6.8584349,107.6386345,2397m/data=!3m2!1e3!4b1!4m6!3m5!1s0x2e68e73bdaa51c0d:0x84c6aa75ef75f49f!8m2!3d-6.8584349!4d107.6386345!16s%2Fg%2F11g9zt3krb?entry=ttu&g_ep=EgoyMDI2MDkxNi4wIKXMDSoASAFQAw%3D%3D" aria-label="Link lokasi">
+          <button class="btn ghost small" type="button" data-copy="lokasiInput">Salin link</button>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 13h18M12 8c-2-4-6-4-6-1s4 1 6 1zm0 0c2-4 6-4 6-1s-4 1-6 1z"/></svg></div>
+        <div class="time">Setelah makan</div>
+        <h3>Hadiah untukmu</h3>
+        <p>Ada sesuatu kecil dariku. Coba buka.</p>
+        <button class="gift" id="giftBtn" aria-expanded="false">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <rect x="5" y="17" width="30" height="19" rx="3" fill="#e8a5b0"/>
+            <rect x="18" y="17" width="4" height="19" fill="#e6c58f"/>
+            <g class="lid"><rect x="3" y="11" width="34" height="8" rx="2" fill="#f0b9c2"/><rect x="18" y="11" width="4" height="8" fill="#e6c58f"/><path d="M20 11c-3-6-9-5-8-2s6 2 8 2zm0 0c3-6 9-5 8-2s-6 2-8 2z" fill="none" stroke="#e6c58f" stroke-width="2"/></g>
+          </svg>
+          <span id="giftLabel">Ketuk untuk membuka hadiah</span>
+        </button>
+        <div class="gift-msg" id="giftMsg">Isi hadiahnya rahasia dulu ya. Nanti kuberikan langsung ke tanganmu.</div>
+      </div>
+
+      <div class="step reveal">
+        <div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.500"/></svg></div>
+        <div class="time">Penutup</div>
+        <h3>Sesi fotobox</h3>
+        <p>Supaya malam ini bisa kita simpan. Pilih gaya favoritmu.</p>
+        <button class="btn ghost" id="snapBtn" style="margin-top:14px;">Cekrek!</button>
+        <div class="strip" id="strip" aria-hidden="true">
+          <div style="--r:-3deg"><span>😊</span></div>
+          <div style="--r:2deg"><span>😘</span></div>
+          <div style="--r:-2deg"><span>🤪</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="rsvp" class="sky" style="max-width:none;">
+    <div style="max-width:640px;margin:0 auto;">
+      <h2 class="reveal">Jadi, kamu mau?</h2>
+      <p class="ask reveal">Dinner bareng aku</p>
+      <p class="detail reveal"><span id="tanggal">20 September 2026</span></p>
+
+      <div class="answers reveal" id="answers">
+        <button class="btn" id="btnYes">Mau banget</button>
+        <button class="btn ghost" id="btnNo">Aku datang, Sayangku</button>
+      </div>
+
+      <div class="thanks" id="thanks" aria-live="polite">
+        <h3 id="thanksTitle">Terima kasih, Sayangku. Sampai ketemu nanti malam.</h3>
+        <p id="thanksText">Jam 17.00 aku jemput. Aku akan datang dengan hati yang tenang dan mau mendengarkan.</p>
+        <a class="btn" id="waLink" href="#" target="_blank" rel="noopener">Kabari aku lewat WhatsApp</a>
+        <div class="fallback">
+          <span>Kalau tombol tidak terbuka, kirim pesan ini ke <strong id="waNomor"></strong>:</span>
+          <input readonly id="waInput" aria-label="Pesan untuk dikirim">
+          <button class="btn ghost small" type="button" data-copy="waInput">Salin pesan</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Dengan sayang, <span id="namaPengirim2">aku</span></footer>
+  </div>
+</main>
+
+<div class="flash" id="flash"></div>
+
+<script>
+  /* ================================================
+     UBAH BAGIAN INI SAJA (isi sesuai kamu)
+     ================================================ */
+  const CONFIG = {
+    namaPacar:   "My Honey Bunny Sweetie Pie Fadila ❤️",
+    namaKamu:    "Anthonie",
+    tanggal:     "20 September 2026",
+    tempat:      "Sky best view resto",
+    nomorWA:     "6281321397359"
+  };
+  /* ================================================ */
+
+  // Isi nama & detail ke halaman
+  document.getElementById("namaCover").textContent = CONFIG.namaPacar;
+  document.getElementById("namaPengirim").textContent = CONFIG.namaKamu;
+  document.getElementById("namaPengirim2").textContent = CONFIG.namaKamu;
+  document.getElementById("tempat").textContent = CONFIG.tempat;
+  document.getElementById("tanggal").textContent = CONFIG.tanggal;
+  document.querySelectorAll(".nama").forEach(function (el) { el.textContent = CONFIG.namaPacar; });
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Hati melayang
+  function hearts(n) {
+    if (reduceMotion) return;
+    for (let i = 0; i < n; i++) {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = ["❤️", "💖", "💕", "✨"][Math.floor(Math.random() * 4)];
+      h.style.left = Math.random() * 96 + "vw";
+      h.style.fontSize = 18 + Math.random() * 22 + "px";
+      h.style.animationDuration = 2.800 + Math.random() * 2.500 + "s";
+      h.style.animationDelay = Math.random() * 0.700 + "s";
+      document.body.appendChild(h);
+      setTimeout(function () { h.remove(); }, 7000);
+    }
+  }
+
+  // Buka undangan
+  document.getElementById("openBtn").addEventListener("click", function () {
+    const cover = document.getElementById("cover");
+    document.getElementById("main").classList.add("show");
+    cover.classList.add("gone");
+    document.body.classList.remove("locked");
+    window.scrollTo(0, 0);
+    hearts(14);
+    setTimeout(function () { cover.style.display = "none"; observeAll(); }, 800);
+  });
+
+  // Muncul saat di-scroll
+  let observed = false;
+  function observeAll() {
+    if (observed) return;
+    observed = true;
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("in");
+          if (e.target.contains(document.getElementById("road"))) startCar();
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  }
+
+  // Mobil jemput
+  let carStarted = false;
+  function startCar() {
+    if (carStarted) return;
+    carStarted = true;
+    const car = document.getElementById("car");
+    car.classList.add("go");
+    car.addEventListener("animationend", function (e) {
+      if (e.animationName === "drive") {
+        document.getElementById("arrived").textContent = "Tiiin tiiin! Aku sudah di depan rumahmu.";
+      }
+    });
+  }
+
+  // Amin
+  document.getElementById("amin").addEventListener("click", function () {
+    this.textContent = "Aamiin. Terima kasih, Sayangku";
+    this.disabled = true;
+    hearts(22);
+  });
+
+  // Kue: tiup lilin, lalu lanjut
+  document.getElementById("cakeBtn").addEventListener("click", function () {
+    if (this.classList.contains("out")) return;
+    this.classList.add("out");
+    this.setAttribute("aria-label", "Lilin sudah ditiup");
+    document.getElementById("kueHint").textContent = "Lilinnya sudah padam. Semoga harapanmu terkabul.";
+    document.getElementById("kueDone").classList.add("show");
+    hearts(30);
+  });
+  document.getElementById("lanjutBtn").addEventListener("click", function () {
+    document.getElementById("rest").classList.add("show");
+    document.getElementById("rundown").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  });
+
+  // Hadiah
+  document.getElementById("giftBtn").addEventListener("click", function () {
+    const open = this.classList.toggle("open");
+    this.setAttribute("aria-expanded", open);
+    document.getElementById("giftMsg").classList.toggle("show", open);
+    document.getElementById("giftLabel").textContent = open ? "Ketuk lagi untuk menutup" : "Ketuk untuk membuka hadiah";
+    if (open) hearts(12);
+  });
+
+  // Fotobox
+  document.getElementById("snapBtn").addEventListener("click", function () {
+    const f = document.getElementById("flash");
+    f.classList.remove("pop"); void f.offsetWidth; f.classList.add("pop");
+    document.getElementById("strip").classList.add("show");
+    this.textContent = "Sekali lagi!";
+  });
+
+  // Jawaban
+  const btnNo = document.getElementById("btnNo");
+  const btnYes = document.getElementById("btnYes");
+  function showThanks(yes) {
+    document.getElementById("answers").style.display = "none";
+    document.getElementById("thanks").classList.add("show");
+    let pesan;
+    if (yes) {
+      hearts(40);
+      pesan = "Hai Sayangku, aku mau dinner sama kamu di " + CONFIG.tempat + " pada " + CONFIG.tanggal + ". Jemput jam 17.00 ya.";
+    } else {
+      document.getElementById("thanksTitle").textContent = "Terima kasih sudah jujur, Sayangku.";
+      document.getElementById("thanksText").textContent = "Aku mengerti dan aku menghargainya. Tidak ada paksaan. Kalau kamu sudah siap, kabari aku kapan pun.";
+      pesan = "Halo " + CONFIG.namaKamu + ", aku belum bisa malam ini, tapi aku ingin bicara kalau sudah siap.";
+    }
+    document.getElementById("waNomor").textContent = "+" + CONFIG.nomorWA;
+    document.getElementById("waInput").value = pesan;
+    const base = CONFIG.nomorWA ? "https://wa.me/" + CONFIG.nomorWA : "https://wa.me/";
+    document.getElementById("waLink").href = base + "?text=" + encodeURIComponent(pesan);
+    document.getElementById("thanks").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+  }
+  btnNo.addEventListener("click", function () { showThanks(true); });
+  btnYes.addEventListener("click", function () { showThanks(true); });
+
+
+  // Buka link luar (dengan cadangan kalau diblokir)
+  document.addEventListener("click", function (e) {
+    const a = e.target.closest('a[target="_blank"]');
+    if (!a || !a.href || a.getAttribute("href") === "#") return;
+    e.preventDefault();
+    let w = null;
+    try { w = window.open(a.href, "_blank"); if (w) w.opener = null; } catch (_) {}
+    if (!w) { try { window.top.location.href = a.href; } catch (_) {} }
+  });
+
+  // Salin teks
+  document.addEventListener("click", function (e) {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    const input = document.getElementById(b.dataset.copy);
+    input.focus(); input.select(); input.setSelectionRange(0, 9999);
+    const done = function () { const t = b.textContent; b.textContent = "Tersalin"; setTimeout(function () { b.textContent = t; }, 1800); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(input.value).then(done, function () { try { document.execCommand("copy"); done(); } catch (_) {} });
+    } else { try { document.execCommand("copy"); done(); } catch (_) {} }
+  });
+</script>
+</body>
+</html>
